@@ -1,0 +1,113 @@
+/*.myContainer {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+*/
+
+.navbar{
+  margin:0px;
+}
+
+.navbar-inverse{
+  background-image: linear-gradient(to bottom,#0F2310 0,#000 100%);
+}
+
+.index-main {
+
+    background-image: url(../images/shady-forest.jpg);
+    /*background-image: url(../images/forest1.jpg);*/
+    background-size: 100%;
+    padding-top: 20%;
+    padding-bottom: 25%;
+    color: white;
+    margin-bottom:-70px;
+}
+
+.sign-up-container {
+
+    background-color: rgba(25,25,25,.90);
+    text-align: center;
+    border-radius: 20px;
+    width:60%;
+}
+
+.footer{
+  margin-bottom:10px;
+}
+
+.footer-container{
+  width:50%;
+  border-radius: 10px;
+  padding-top:10px;
+  padding-bottom:5px;
+  color:rgba(220,220,220,1);
+  background-color:rgba(25,25,25,1);
+  font-size:1.5em;
+  text-align: center;
+}
+
+.nav-badge{
+  color:white;
+  background-color:rgba(25,65,25,1);
+}
+
+.modal-alert{
+  margin-left:1em;
+  margin-top:2em;
+  margin-right:1em;
+  margin-bottom:0em;
+  text-align:center;
+  background-image: linear-gradient(to bottom,#661400 0,#b61800 100%);
+  border-color:#661400;
+  color:#fff;
+  //display:none;
+}
+
+.modal-alert{
+  display: block
+}
+
+.modal-alert.alert-hide{
+  display: none
+}
+
+#passMatch{
+  margin-top:5px;
+  color:#fff;
+}
+
+#bookListing a{
+  text-decoration:underline;
+  color:#000;
+}
+
+.sidebar-module{
+  margin-right:50px;
+}
+
+/*
+.text {
+    opacity: 1;
+    color: white;
+}
+
+.nav {
+    font-size: 125%;
+}
+
+.cd-user-modal {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+ 
+.cd-user-modal.is-visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+a {
+    text-decoration: none !important;
+}*/
+
