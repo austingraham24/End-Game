@@ -1,0 +1,220 @@
+<?php
+
+?>
+
+<html>
+
+	<head>
+		<title>HTML5 Canvas Example</title>
+		
+		<!-- Include the JQuery code -->
+		<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+		
+		<script>
+			
+			//Clears our canvas
+			function clear_canvas() {
+				//Clear the canvas
+				var a_canvas = document.getElementById("a");
+				a_canvas.width = a_canvas.width;
+				
+				//Clears our lines array
+				line_array = new Array(10);
+				lines = 0;
+			}
+			
+			//Draws a solid box
+			function draw_box() {
+				//Get our context
+				var a_canvas = document.getElementById("a");
+				var a_context = a_canvas.getContext("2d");
+				
+				//Draw the rectangle
+				a_context.fillRect(50, 25, 150, 100);
+			}
+			
+			//Draws a grid
+			function draw_grid() {
+				//Get our context
+				var a_canvas = document.getElementById("a");
+				var a_context = a_canvas.getContext("2d");
+				
+				//Trace the horizontal and vertical lines
+				for (var x = 0.5; x < 500; x += 10) {
+				  a_context.moveTo(x, 0);
+				  a_context.lineTo(x, 375);
+				}
+				
+				for (var y = 0.5; y < 375; y += 10) {
+					a_context.moveTo(0, y);
+					a_context.lineTo(500, y);
+				}
+				
+				//Set the stroke style (in this case, only a color)
+				a_context.strokeStyle = "#eee";
+				
+				//This line below actually draws everything
+				a_context.stroke();
+			
+			}
+			
+			//Draw some text
+			function draw_text() {
+				//Get our context
+				var a_canvas = document.getElementById("a");
+				var a_context = a_canvas.getContext("2d");
+				
+				//Draw text in the top left corner
+				a_context.textBaseline = "top";
+				a_context.fillText("( 0 , 0 )", 8, 5);
+				
+				//Draw text in the bottom right corner
+				a_context.textAlign = "right";
+				a_context.textBaseline = "bottom";
+				a_context.fillText("( 500 , 375 )", 492, 370);
+				
+				//Draw some dots to represent our text coordinates
+				a_context.fillRect(0, 0, 3, 3);
+				a_context.fillRect(497, 372, 3, 3);
+
+			}
+			
+			//Draw a gradient from top-left to bot-right
+			function draw_gradient() {
+				//Get our context
+				var a_canvas = document.getElementById("a");
+				var a_context = a_canvas.getContext("2d");
+				
+				//Create a gradient
+				var my_gradient = a_context.createLinearGradient(0, 0, 300, 225);
+				
+				//Set the colors (you can have as many as you want)
+				my_gradient.addColorStop(0, "black");
+				my_gradient.addColorStop(.25, "blue");
+				my_gradient.addColorStop(.5, "green");
+				my_gradient.addColorStop(.75, "red");
+				my_gradient.addColorStop(1, "white");
+				
+				//Set the fill style to be the gradient we just created
+				a_context.fillStyle = my_gradient;
+				
+				//Draw the gradient
+				a_context.fillRect(0, 0, 300, 225);
+			}
+			
+			function draw_rects() {
+				//Get our context
+				var a_canvas = document.getElementById("a");
+				var a_context = a_canvas.getContext("2d");
+				
+				//Set up some properties for the rectangles below
+				a_context.fillStyle   = '#00f'; // blue
+				a_context.strokeStyle = '#f00'; // red
+				a_context.lineWidth   = 4;
+
+				// Draw some rectangles.
+				a_context.fillRect  (0,   0, 150, 50);
+				a_context.strokeRect(0,  60, 150, 50);
+				a_context.clearRect (30, 25,  90, 60);
+				a_context.strokeRect(30, 25,  90, 60);
+			}
+			
+			//Some global variables for drawing lines
+			var mouse_click_x = 0;
+			var mouse_click_y = 0;
+			var mouse_is_down = false;
+			var line_array = new Array(10);
+			var lines = 0;
+			
+			function setup() {
+				//Set up the mouse event handlers for when the cursor moves over the canvas element
+				//They are inside of this setup() function because if you just stick them in your JS, the canvas element has not loaded yet.  
+				//So this setup() function is called with the "onload" event attached to the "<body>" element so that we are sure our canvas has loaded.
+				$("#a").mousemove(function(e){
+					var pageCoords = "( " + e.pageX + ", " + e.pageY + " )";
+					var clientCoords = "( " + e.clientX + ", " + e.clientY + " )";
+					$("span:first").text("( e.pageX, e.pageY ) : " + pageCoords);
+					$("span:last").text("( e.clientX, e.clientY ) : " + clientCoords);
+					
+					if(mouse_is_down)
+					{
+						//Get our context
+						var a_canvas = document.getElementById("a");
+						var a_context = a_canvas.getContext("2d");
+						
+						//Clear the context
+						a_canvas.width = a_canvas.width;
+						
+						//Set the stroke style
+						a_context.strokeStyle = "#000";
+						
+						//Redraw all of our lines
+						for(i=0; i<lines; i++)
+						{
+							a_context.moveTo(line_array[i][0], line_array[i][1]);
+							a_context.lineTo(line_array[i][2], line_array[i][3]);
+							a_context.stroke();
+						}
+						
+						//Draw the new line
+						a_context.moveTo(mouse_click_x, mouse_click_y);
+						a_context.lineTo(e.pageX, e.pageY);
+						a_context.stroke();
+					}
+				});
+				
+				$("#a").mousedown(function(e){
+					//A new line has started
+					mouse_click_x = e.pageX;
+					mouse_click_y = e.pageY;
+					mouse_is_down = true;
+				});
+				
+				$("#a").mouseup(function(e){
+					//Stop drawing the new line
+					mouse_is_down = false;
+					
+					//Put this new line into our lines array
+					line_array[lines] = new Array(4);
+					line_array[lines][0] = mouse_click_x;
+					line_array[lines][1] = mouse_click_y;
+					line_array[lines][2] = e.pageX;
+					line_array[lines][3] = e.pageY;
+					lines++;
+				});
+			}
+		</script>
+	</head>
+	<body onload="setup()">
+		
+		<a href="#" onclick="clear_canvas()">Click to clear our canvas</a><br/>
+		
+		
+		<canvas id="a" width="500" height="375">Your browser doesn't support Canvas</canvas>
+		
+		<br/><br/>
+		
+		Example #1: <a href="#" onclick="draw_box()">Click to draw a rectangle</a><br/>
+		
+		Example #2: <a href="#" onclick="draw_grid()">Click to draw a grid</a><br/>
+		
+		Example #3: <a href="#" onclick="draw_text()">Click to draw some text</a><br/>
+		
+		Example #4: <a href="#" onclick="draw_gradient()">Click to draw a rectangle with a gradient</a><br/>
+		
+		Example #5: <a href="#" onclick="draw_rects()">Click to draw several rectacles with different colors</a><br/>
+		
+		<br/>
+		Mouse Coordinates on the Canvas:</br>
+		<span>&nbsp;</span><br/>
+		<span>&nbsp;</span>
+		
+		<div></div>
+		<script>
+			
+		</script>
+
+		
+	</body>
+	
+</html>
