@@ -1,0 +1,2 @@
+https://geeksretreat.wordpress.com/2012/06/01/html-5-canvas-chess-board/
+https://github.com/rheh/HTML5-canvas-projects/tree/master/chess
