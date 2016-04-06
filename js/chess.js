@@ -165,8 +165,13 @@ function blockOccupied(clickedBlock) {
 }
 
 function canPawnMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
-	var iRowToMoveTo = (currentTurn === WHITE_TEAM ? selectedPiece.row + 1 : selectedPiece.row - 1),
-		bAdjacentEnemy = (clickedBlock.col === selectedPiece.col - 1 ||
+	var iRowToMoveTo;
+	if((selectedPiece.row==1||selectedPiece.row==6)&&(clickedBlock.row==selectedPiece.row+2||clickedBlock.row==selectedPiece.row-2)){
+		iRowToMoveTo = (currentTurn === WHITE_TEAM ? selectedPiece.row + 2 : selectedPiece.row - 2)
+	}else{
+		iRowToMoveTo = (currentTurn === WHITE_TEAM ? selectedPiece.row + 1 : selectedPiece.row - 1)
+	}
+		var bAdjacentEnemy = (clickedBlock.col === selectedPiece.col - 1 ||
 					clickedBlock.col === selectedPiece.col + 1) &&
 					enemyPiece !== null,
 		bNextRowEmpty = (clickedBlock.col === selectedPiece.col &&
