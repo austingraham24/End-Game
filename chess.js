@@ -99,7 +99,7 @@ var piecePositions = null;
 
 var PIECE_PAWN = 0,
 	PIECE_CASTLE = 1,
-	PIECE_ROUKE = 2,
+	PIECE_ROOK = 2,
 	PIECE_BISHOP = 3,
 	PIECE_QUEEN = 4,
 	PIECE_KING = 5,
@@ -164,6 +164,20 @@ function blockOccupied(clickedBlock) {
 	return (pieceAtBlock !== null);
 }
 
+function blockOccupiedBYCOORD(x, y) {
+	var clickedBlock = {};
+	clickedBlock.row = x;
+	clickedBlock.col = y;
+	var pieceAtBlock = getPieceAtBlockForTeam(json.black, clickedBlock);
+
+	if (pieceAtBlock === null) {
+		pieceAtBlock = getPieceAtBlockForTeam(json.white, clickedBlock);
+	}
+
+	return (pieceAtBlock !== null);
+	
+}
+
 function canPawnMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	var iRowToMoveTo = (currentTurn === WHITE_TEAM ? selectedPiece.row + 1 : selectedPiece.row - 1),
 		bAdjacentEnemy = (clickedBlock.col === selectedPiece.col - 1 ||
@@ -187,6 +201,62 @@ function canKingMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	return false;
 }
 
+function canCastleMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
+	if (selectedPiece.col === clickedBlock.col && selectedPiece.row !== clickedBlock.row || selectedPiece.row === clickedBlock.row && selectedPiece.col !== clickedBlock.col) {
+		if (selectedPiece.col === clickedBlock.col && currentTurn === WHITE_TEAM && clickedBlock.row > selectedPiece.row) {
+			for (var i = 0; i < clickedBlock.row - selectedPiece.row; i++) {
+				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, clickedBlock.col)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.col === clickedBlock.col && currentTurn === BLACK_TEAM && clickedBlock.row < selectedPiece.row) {
+			for (var i = 0; i < selectedPiece.row - clickedBlock.row; i++) {
+				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, clickedBlock.col)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.col === clickedBlock.col && currentTurn === WHITE_TEAM && clickedBlock.row < selectedPiece.row) {
+			for (var i = 0; i < selectedPiece.row - clickedBlock.row; i++) {
+				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, clickedBlock.col)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.col === clickedBlock.col && currentTurn === BLACK_TEAM && clickedBlock.row > selectedPiece.row) {
+			for (var i = 0; i < clickedBlock.row - selectedPiece.row; i++) {
+				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, clickedBlock.col)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.row === clickedBlock.row && currentTurn === WHITE_TEAM && clickedBlock.col > selectedPiece.col) {
+			for (var i = 0; i < clickedBlock.col - selectedPiece.col; i++) {
+				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col + i + 1)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.row === clickedBlock.row && currentTurn === WHITE_TEAM && clickedBlock.col < selectedPiece.col) {
+			for (var i = 0; i < selectedPiece.col - clickedBlock.col; i++) {
+				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col - i - 1)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.row === clickedBlock.row && currentTurn === BLACK_TEAM && clickedBlock.col > selectedPiece.col) {
+			for (var i = 0; i < clickedBlock.col - selectedPiece.col; i++) {
+				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col + i + 1)) {
+					return false;
+				}
+			}
+		} else if (selectedPiece.row === clickedBlock.row && currentTurn === BLACK_TEAM && clickedBlock.col < selectedPiece.col) {
+			for (var i = 0; i < selectedPiece.col - clickedBlock.col; i++) {
+				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col - i - 1)) {
+					return false;
+				}
+			}
+		} 
+		return true;
+	}
+	return false;
+}
+
 function canSelectedMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	var bCanMove = false;
 
@@ -200,13 +270,11 @@ function canSelectedMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 
 	case PIECE_CASTLE:
 
-		// TODO
-
+		bCanMove = canCastleMoveToBlock(selectedPiece, clickedBlock, enemyPiece);
 		break;
 
-	case PIECE_ROUKE:
-
-		// TODO
+	case PIECE_ROOK:
+		
 
 		break;
 
@@ -351,7 +419,7 @@ function defaultPositions() {
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_ROUKE,
+					"piece": PIECE_ROOK,
 					"row": 0,
 					"col": 1,
 					"status": IN_PLAY
@@ -381,7 +449,7 @@ function defaultPositions() {
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_ROUKE,
+					"piece": PIECE_ROOK,
 					"row": 0,
 					"col": 6,
 					"status": IN_PLAY
@@ -450,7 +518,7 @@ function defaultPositions() {
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_ROUKE,
+					"piece": PIECE_ROOK,
 					"row": 7,
 					"col": 1,
 					"status": IN_PLAY
@@ -480,7 +548,7 @@ function defaultPositions() {
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_ROUKE,
+					"piece": PIECE_ROOK,
 					"row": 7,
 					"col": 6,
 					"status": IN_PLAY
