@@ -87,8 +87,6 @@ function getBlockColour(iRowCounter, iBlockCounter) {
 	return cStartColour;
 }*/
 
-var gameOver=false;
-
 var NUMBER_OF_COLS = 8,
 	NUMBER_OF_ROWS = 8,
 	BLOCK_SIZE = 100;
@@ -101,7 +99,7 @@ var piecePositions = null;
 
 var PIECE_PAWN = 0,
 	PIECE_CASTLE = 1,
-	PIECE_KNIGHT = 2,
+	PIECE_ROUKE = 2,
 	PIECE_BISHOP = 3,
 	PIECE_QUEEN = 4,
 	PIECE_KING = 5,
@@ -166,20 +164,6 @@ function blockOccupied(clickedBlock) {
 	return (pieceAtBlock !== null);
 }
 
-function blockOccupiedBYCOORD(x, y) {
-	var clickedBlock = {};
-	clickedBlock.row = x;
-	clickedBlock.col = y;
-	var pieceAtBlock = getPieceAtBlockForTeam(json.black, clickedBlock);
-
-	if (pieceAtBlock === null) {
-		pieceAtBlock = getPieceAtBlockForTeam(json.white, clickedBlock);
-	}
-
-	return (pieceAtBlock !== null);
-	
-}
-
 function canPawnMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	var iRowToMoveTo;
 	if((selectedPiece.row==1||selectedPiece.row==6)&&(clickedBlock.row==selectedPiece.row+2||clickedBlock.row==selectedPiece.row-2)){
@@ -208,134 +192,6 @@ function canKingMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	return false;
 }
 
-function canCastleMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
-	if (selectedPiece.col === clickedBlock.col && selectedPiece.row !== clickedBlock.row || selectedPiece.row === clickedBlock.row && selectedPiece.col !== clickedBlock.col) {
-		if (selectedPiece.col === clickedBlock.col && currentTurn === WHITE_TEAM && clickedBlock.row > selectedPiece.row) {
-			for (var i = 0; i < clickedBlock.row - selectedPiece.row; i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, clickedBlock.col) && !(i + 1 + selectedPiece.row === clickedBlock.row && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.col === clickedBlock.col && currentTurn === BLACK_TEAM && clickedBlock.row < selectedPiece.row) {
-			for (var i = 0; i < selectedPiece.row - clickedBlock.row; i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, clickedBlock.col) && !(selectedPiece.row - i - 1 === clickedBlock.row && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.col === clickedBlock.col && currentTurn === WHITE_TEAM && clickedBlock.row < selectedPiece.row) {
-			for (var i = 0; i < selectedPiece.row - clickedBlock.row; i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, clickedBlock.col) && !(selectedPiece.row - i - 1 === clickedBlock.row && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.col === clickedBlock.col && currentTurn === BLACK_TEAM && clickedBlock.row > selectedPiece.row) {
-			for (var i = 0; i < clickedBlock.row - selectedPiece.row; i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, clickedBlock.col) && !(i + 1 + selectedPiece.row === clickedBlock.row && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.row === clickedBlock.row && currentTurn === WHITE_TEAM && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < clickedBlock.col - selectedPiece.col; i++) {
-				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col + i + 1) && !(i + 1 + selectedPiece.col === clickedBlock.col && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.row === clickedBlock.row && currentTurn === WHITE_TEAM && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < selectedPiece.col - clickedBlock.col; i++) {
-				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.row === clickedBlock.row && currentTurn === BLACK_TEAM && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < clickedBlock.col - selectedPiece.col; i++) {
-				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col + i + 1) && !(selectedPiece.col + i + 1 === clickedBlock.col && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} else if (selectedPiece.row === clickedBlock.row && currentTurn === BLACK_TEAM && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < selectedPiece.col - clickedBlock.col; i++) {
-				if (blockOccupiedBYCOORD(clickedBlock.row, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && blockOccupiedByEnemy(clickedBlock))) {
-					return false;
-				}
-			}
-		} 
-		return true;
-	}
-	return false;
-}
-
-function canKnightMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
-	if ((Math.abs(selectedPiece.row - clickedBlock.row) === 2 && Math.abs(selectedPiece.col - clickedBlock.col) === 1 || Math.abs(selectedPiece.col - clickedBlock.col) === 2 && Math.abs(selectedPiece.row - clickedBlock.row) === 1) && (!blockOccupied(clickedBlock) || enemyPiece)) {
-		return true;
-	}
-	return false;
-}
-
-function canBishopMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
-	if (Math.abs(selectedPiece.row - clickedBlock.row) >= 1 && Math.abs(selectedPiece.col - clickedBlock.col) >= 1) {
-		if (currentTurn === WHITE_TEAM && clickedBlock.row > selectedPiece.row && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, selectedPiece.col + i + 1) && !(selectedPiece.col + i + 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === WHITE_TEAM && clickedBlock.row > selectedPiece.row && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === WHITE_TEAM && clickedBlock.row < selectedPiece.row && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === WHITE_TEAM && clickedBlock.row < selectedPiece.row && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, selectedPiece.col + i + 1) && !(selectedPiece.col + i + 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === BLACK_TEAM && clickedBlock.row > selectedPiece.row && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, selectedPiece.col + i + 1) && !(selectedPiece.col + i + 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === BLACK_TEAM && clickedBlock.row > selectedPiece.row && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row + i + 1, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === BLACK_TEAM && clickedBlock.row < selectedPiece.row && clickedBlock.col < selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, selectedPiece.col - i - 1) && !(selectedPiece.col - i - 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		} else if (currentTurn === BLACK_TEAM && clickedBlock.row < selectedPiece.row && clickedBlock.col > selectedPiece.col) {
-			for (var i = 0; i < Math.abs(selectedPiece.row - clickedBlock.row); i++) {
-				if (blockOccupiedBYCOORD(selectedPiece.row - i - 1, selectedPiece.col + i + 1) && !(selectedPiece.col + i + 1 === clickedBlock.col && enemyPiece)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-function canQueenMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
-	if (canBishopMoveToBlock(selectedPiece, clickedBlock, enemyPiece) || canCastleMoveToBlock(selectedPiece, clickedBlock, enemyPiece)) {
-		return true;
-	}
-	return false;
-}
-
 function canSelectedMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 	var bCanMove = false;
 
@@ -349,19 +205,26 @@ function canSelectedMoveToBlock(selectedPiece, clickedBlock, enemyPiece) {
 
 	case PIECE_CASTLE:
 
-		bCanMove = canCastleMoveToBlock(selectedPiece, clickedBlock, enemyPiece);
+		// TODO
+
 		break;
 
-	case PIECE_KNIGHT:
-		bCanMove = canKnightMoveToBlock(selectedPiece, clickedBlock, enemyPiece);
+	case PIECE_ROUKE:
+
+		// TODO
+
 		break;
 
 	case PIECE_BISHOP:
-		bCanMove = canBishopMoveToBlock(selectedPiece, clickedBlock, enemyPiece);
+
+		// TODO
+
 		break;
 
 	case PIECE_QUEEN:
-		bCanMove = canQueenMoveToBlock(selectedPiece, clickedBlock, enemyPiece);
+
+		// TODO
+
 		break;
 
 	case PIECE_KING:
@@ -488,112 +351,96 @@ function defaultPositions() {
 			[
 				{
 					"piece": PIECE_CASTLE,
-					"name":"Castle",
 					"row": 0,
 					"col": 0,
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_KNIGHT,
-					"name":"Knight",
+					"piece": PIECE_ROUKE,
 					"row": 0,
 					"col": 1,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_BISHOP,
-					"name":"Bishop",
 					"row": 0,
 					"col": 2,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_KING,
-					"name":"King",
 					"row": 0,
 					"col": 3,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_QUEEN,
-					"name":"Queen",
 					"row": 0,
 					"col": 4,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_BISHOP,
-					"name":"Bishop",
 					"row": 0,
 					"col": 5,
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_KNIGHT,
-					"name":"Knight",
+					"piece": PIECE_ROUKE,
 					"row": 0,
 					"col": 6,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_CASTLE,
-					"name":"Castle",
 					"row": 0,
 					"col": 7,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 0,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 1,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 2,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 3,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 4,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 5,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 6,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 1,
 					"col": 7,
 					"status": IN_PLAY
@@ -603,112 +450,96 @@ function defaultPositions() {
 			[
 				{
 					"piece": PIECE_CASTLE,
-					"name":"Castle",
 					"row": 7,
 					"col": 0,
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_KNIGHT,
-					"name":"Knight",
+					"piece": PIECE_ROUKE,
 					"row": 7,
 					"col": 1,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_BISHOP,
-					"name":"Bishop",
 					"row": 7,
 					"col": 2,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_KING,
-					"name":"King",
 					"row": 7,
 					"col": 3,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_QUEEN,
-					"name":"Queen",
 					"row": 7,
 					"col": 4,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_BISHOP,
-					"name":"Bishop",
 					"row": 7,
 					"col": 5,
 					"status": IN_PLAY
 				},
 				{
-					"piece": PIECE_KNIGHT,
-					"name":"Knight",
+					"piece": PIECE_ROUKE,
 					"row": 7,
 					"col": 6,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_CASTLE,
-					"name":"Castle",
 					"row": 7,
 					"col": 7,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 0,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 1,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 2,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 3,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 4,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 5,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 6,
 					"status": IN_PLAY
 				},
 				{
 					"piece": PIECE_PAWN,
-					"name":"Pawn",
 					"row": 6,
 					"col": 7,
 					"status": IN_PLAY
@@ -766,16 +597,12 @@ function movePiece(clickedBlock, enemyPiece) {
 function processMove(clickedBlock) {
 	var pieceAtBlock = getPieceAtBlock(clickedBlock),
 		enemyPiece = blockOccupiedByEnemy(clickedBlock);
+
 	if (pieceAtBlock !== null) {
 		removeSelection(selectedPiece);
 		checkIfPieceClicked(clickedBlock);
 	} else if (canSelectedMoveToBlock(selectedPiece, clickedBlock, enemyPiece) === true) {
 		movePiece(clickedBlock, enemyPiece);
-		//alert(enemyPiece.name);
-		if(enemyPiece.name=="King"){
-			gameOver=true;
-			alert("Checkmate!");
-		}
 	}
 }
 
@@ -783,12 +610,10 @@ function board_click(ev) {
 	var x = ev.pageX - canvas.offsetLeft,
 		y = ev.pageY - canvas.offsetTop,
 		clickedBlock = screenToBlock(x, y);
-	if(gameOver==false){
-		if (selectedPiece === null) {
-			checkIfPieceClicked(clickedBlock);
-		} else {
-			processMove(clickedBlock);
-		}
+	if (selectedPiece === null) {
+		checkIfPieceClicked(clickedBlock);
+	} else {
+		processMove(clickedBlock);
 	}
 }
 
