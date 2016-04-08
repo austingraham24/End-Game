@@ -1,5 +1,7 @@
 /*
-	Code from rheh : https://github.com/rheh/HTML5-canvas-projects/tree/master/chess
+	Code exampole from rheh : https://github.com/rheh/HTML5-canvas-projects/tree/master/chess
+	A lot of this code was ealry set up, but game logic was done by us (using his function name scheme)
+	We will be editing the code moving away from his to make it more our own.
 */
 
 /*var NUMBER_OF_COLS = 8,
@@ -773,8 +775,14 @@ function processMove(clickedBlock) {
 		movePiece(clickedBlock, enemyPiece);
 		//alert(enemyPiece.name);
 		if(enemyPiece.name=="King"){
+			var winner;
+			if(currentTurn==1){
+				winner="Red"
+			}else{
+				winner="White"
+			}
 			gameOver=true;
-			alert("Checkmate!");
+			alert("Checkmate! "+winner+" wins!");
 		}
 	}
 }
