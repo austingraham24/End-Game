@@ -5,21 +5,25 @@
 
 */
 
+body{
+  background:#000;
+}
+
 .navbar{
   margin:0px;
 }
 
 .navbar-inverse{
-  background-image: linear-gradient(to bottom,#0F2310 0,#000 100%);
+  background-image: linear-gradient(to bottom,#330000 0,#000 100%);/*#0F2310*/
 }
 
 .index-main {
 
-    background-image: url(../images/shady-forest.jpg);
+    background-image: url(../images/underland.jpg);
     /*background-image: url(../images/forest1.jpg);*/
     background-size: 100%;
     padding-top: 20%;
-    padding-bottom: 25%;
+    padding-bottom: 15%;
     color: white;
     margin-bottom:-70px;
 }
