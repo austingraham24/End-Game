@@ -312,14 +312,6 @@ function getBlockImgCor(rowCount, blockCount){
 }
 
 function drawBlock(iRowCounter, iBlockCounter) {
-	// Set the background
-	////ctx.fillStyle = getBlockColour(iRowCounter, iBlockCounter);
-
-	// Draw rectangle for the background
-	////ctx.fillRect(iRowCounter * BLOCK_SIZE, iBlockCounter * BLOCK_SIZE,
-	////	BLOCK_SIZE, BLOCK_SIZE);
-
-	////ctx.stroke();
 	var imgCor = getBlockImgCor(iRowCounter, iBlockCounter);
 	ctx.drawImage(board,imgCor,0,100,100,iRowCounter * BLOCK_SIZE,iBlockCounter * BLOCK_SIZE,100,100);
 }
@@ -675,7 +667,7 @@ function draw() {
 		// Board Image
 		board = new Image();
 		board.src = 'images/boardSquares.jpg';
-		board.onload = drawBoard;
+		drawBoard();
 
 		// Draw the background
 		////drawBoard();
@@ -685,7 +677,7 @@ function draw() {
 		// Draw pieces
 		pieces = new Image();
 		pieces.src = 'images/pieces.png';
-		pieces.onload = drawPieces;
+		drawPieces();
 
 
 

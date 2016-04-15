@@ -1,20 +1,20 @@
 <?php
 session_start();
 //connect to database
-//$link = new mysqli("localhost","root","p@ssword","end-game");
-//if ($link->connect_errno) 
-//{
-//    printf("Connect failed: %s\n", $link->connect_error);
-//    exit();
-//}
+$link = new mysqli("localhost","root","p@ssword","end-game");
+if ($link->connect_errno) 
+{
+   printf("Connect failed: %s\n", $link->connect_error);
+   exit();
+}
 
 if(isset($_SESSION['user'])){
 	$email = $_SESSION["user"];
 	$password = $_SESSION[$email];
-	$result = $link->query("SELECT password FROM users where email='$email'");
+	$result = $link->query("SELECT password FROM players where email='$email'");
 	$row = $result->fetch_assoc();
 	if(($password == $row["password"])&&$password!=''){
-		header('Location: main.php');
+		header('Location: lobby.php');
 	}
 }
 
@@ -32,14 +32,16 @@ if($action == "add_user")
         $fname = $_POST["fname"];
         $lname = $_POST["lname"];
         $email = $_POST["email"];
+        $display = $_POST["dname"];
         $password = $_POST["password"];
         
         $fname = htmlentities($link->real_escape_string($fname));
         $lname = htmlentities($link->real_escape_string($lname));
         $email = htmlentities($link->real_escape_string($email));
+        $display = htmlentities($link->real_escape_string($display));
         $password = htmlentities($link->real_escape_string($password));
-        $password = crypt ($password,"Gryfindor");
-        $result = $link->query("INSERT INTO users (first_name,last_name,email,password) VALUES ('$fname', '$lname', '$email', '$password')");
+        $password = crypt ($password,"Hufflepuff");
+        $result = $link->query("INSERT INTO players (first_name,last_name,displayName,email,password) VALUES ('$fname', '$lname', '$display', '$email', '$password')");
 
         $loggedIn = true;
         print($result);
@@ -50,7 +52,7 @@ if($action == "add_user")
         	print("Adding");
 			$_SESSION["user"] = $email;
 			$_SESSION[$email] = $password;
-            header('Location: main.php');
+            header('Location: lobby.php');
         }
     }
 
@@ -61,8 +63,8 @@ if($action == "add_user")
         
         $email = htmlentities($link->real_escape_string($email));
         $password = htmlentities($link->real_escape_string($password));
-        $password = crypt ($password,"Gryfindor");
-        $result = $link->query("SELECT password FROM users where email='$email'");
+        $password = crypt ($password,"Hufflepuff");
+        $result = $link->query("SELECT password FROM players where email='$email'");
 		$row = $result->fetch_assoc();
 		if(!$result)
             die ('Can\'t add user because: ' . $link->error);
@@ -70,7 +72,7 @@ if($action == "add_user")
 			if(($password == $row["password"])&&$password!=''){
 				$_SESSION['user'] = $email;
 				$_SESSION[$email] = $row['password'];
-				header('Location: main.php');
+				header('Location: lobby.php');
 			}else{
 				print("Failed");
 			}
@@ -137,7 +139,7 @@ if($action == "add_user")
 		</script>
 
 	</head>
-	<body role="document">
+	<body role="document" id='index'>
 	    <!-- Fixed navbar--><!--taken from a bootstrap.com theme example and modified-->
 	    <nav class="navbar navbar-inverse navbar-static-top">
 	      <div class="container">
@@ -165,7 +167,7 @@ if($action == "add_user")
             <div class="container sign-up-container">
                 <div class="text main-nav">
                     <h1>Underland Chess</h1> 
-                    <h4>Welcome to the best chess game in all of underland!</h4>
+                    <h4>Welcome to the best chess game in all of Underland!</h4>
                     <p class="lead "></p>
                     <p><a id="join-button" class="btn btn-lg btn-danger site-signUp" href="#" role="button">Sign Up Today!</a></p>
                 </div>

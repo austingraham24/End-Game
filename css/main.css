@@ -5,8 +5,18 @@
 
 */
 
-body{
+body #index{
   background:#000;
+}
+
+.lobby-alert{
+  width: 70%;
+  margin-left: 15%;
+  display: none; 
+}
+
+.lobbyContainer{
+  margin-top: 25px;
 }
 
 .navbar{
@@ -88,6 +98,11 @@ body{
 
 .sidebar-module{
   margin-right:50px;
+}
+
+a.inactive {
+  pointer-events: none;
+  cursor: default;
 }
 
 /*
