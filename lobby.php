@@ -94,20 +94,34 @@ $userID = $row['id'];
 			}
 
 			function addGame(){
-				socket.emit('addGame',playerDisplay,1);
-				alert('Create!');
+				socket.emit('addGame',playerDisplay);
+				//alert('Create!');
 			}
 
 			function addGameDB(playerId){
 				$.ajax({url: "ajax.php?action=createGame&id="+playerId, success: function(data){
 					//alert(data);
+					$('#lobbyAlert').html("You created a game!");
+					$('#createButton').slideUp();
+					$('#lobbyAlert').delay("slow").slideDown();
 					socket.emit('updateAvailableGames',data);
+					appendToGameTable("<tr><td>$displayName</td><td>This is your game</td></tr>");
 					//$('#availableGameTableBody').append(data);
 				}});
 			}
 
+			function joinGame(gameId){
+				$.ajax({url: "ajax.php?action=joinGame&id="+playerId+'gameId='+gameId, success: function(data){
+					//alert(data);
+					socket.emit('joinGame',gameId);
+					window.location = "game.php";
+				}});
+				//window.location = "game.php";
+			}
+
+
 			function appendToGameTable(data){
-				alert('Hello!');
+				//alert('Hello!');
 				$('#availableGameTableBody').append(data);
 			}
 
@@ -120,6 +134,8 @@ $userID = $row['id'];
 				$('#lobbyAlert').delay("slow").slideDown();
 			}
 
+			//window.location = "www.abc.com"
+
 			try{
 				var socket = io.connect('http://150.252.35.128:9000');
 
@@ -127,23 +143,31 @@ $userID = $row['id'];
 				    //var uname = prompt("What's your name: ");
 				    //console.log(uname);
 				    //socket.emit('adduser', uname);
+				    socket.emit('adduser',playerDisplay);
 				});
 
 				socket.on('addGame',function(message){
 					//$('#lobbyAlert').html(message);
 					//$('#createButton').slideUp();
 					//$('#lobbyAlert').delay("slow").slideDown();
-					alert('addGame');
+					//alert('addGame');
 					addGameDB(playerId);
 				});
 
 				socket.on('updateAvailableGames', function (data){
-					alert('socket');
+					//alert('socket');
 			        appendToGameTable(data);
 			    });
 
 			    socket.on('updateGames',function(message){
 			    	alert(message);
+			    });
+
+			    socket.on('startGame',function(creator){
+			    	alert('start');
+			    	if(creator == playerDisplay){
+			    		window.location = "game.php";
+			    	}
 			    });
 			}
 			catch(err){

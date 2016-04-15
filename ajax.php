@@ -23,7 +23,14 @@
 		$row = $game->fetch_assoc();
 		$gameId = $row['id'];
 		$displayName = $row['displayName'];
-		print("<tr><td>$displayName</td><td>Join!</td></tr>");
+		print("<tr><td>$displayName</td><td><button class='btn btn-success' onclick='joinGame($gameId)'>Join!</button></td></tr>");
+		//print($result);
+	}
+
+	if($action=='joinGame'){
+		$id = $_GET["id"];
+		$gameId = $_GET["gameId"];
+		$result = $mysqli->query("UPDATE game set opponent = $id where id = $gameId");
 		//print($result);
 	}
 
